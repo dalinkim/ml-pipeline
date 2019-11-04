@@ -6,18 +6,14 @@ object DataProcessor {
 
   private val s3Prefix = "s3://"
   private val s3BucketName = "dalin-ml-pipeline"
-  private val indexTablePath = "/input/index_table"
 
   private val dataSourcePath = s"$s3Prefix$s3BucketName" + "/input/*.ASC"
-  private val diagnosisIndexTablePath = s"$s3Prefix$s3BucketName$indexTablePath" + "/diagnosis_index/*.csv"
-  private val externalCauseIndexTablePath = s"$s3Prefix$s3BucketName$indexTablePath" + "/external_cause_index/*.csv"
-  private val procedureIndexTablePath = s"$s3Prefix$s3BucketName$indexTablePath" + "/procedure_index/*.csv"
   private val dataOutputPath = s"$s3Prefix$s3BucketName" + "/transformed-csv"
 
   def main(args: Array[String]): Unit = {
 
     // using service to handle the main work
-    val nisDataProcessingService = new NISDataProcessingService(dataSourcePath, diagnosisIndexTablePath, externalCauseIndexTablePath, procedureIndexTablePath)
+    val nisDataProcessingService = new NISDataProcessingService(dataSourcePath)
 
     // process data
     val processedDF: DataFrame = nisDataProcessingService.process()

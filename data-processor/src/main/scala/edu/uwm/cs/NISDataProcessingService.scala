@@ -1,11 +1,8 @@
 package edu.uwm.cs
 
-import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
-class NISDataProcessingService(dataSourcePath: String,
-                               diagnosisIndexTablePath: String,
-                               externalCauseIndexTablePath: String,
-                               procedureIndexTablePath: String) extends Serializable {
+class NISDataProcessingService(dataSourcePath: String) extends Serializable {
 
   lazy val spark: SparkSession = SparkSession.builder
 //    .master("local[*]") // remove when submitting to EMR
@@ -32,7 +29,7 @@ class NISDataProcessingService(dataSourcePath: String,
     processedDF.write
       .format("csv")
       .option("header", "true")
-      .mode(SaveMode.Overwrite)
+      .mode("overwrite")
       .save(dataOutputPath)
   }
 
