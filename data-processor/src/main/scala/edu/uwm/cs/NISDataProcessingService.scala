@@ -1,9 +1,6 @@
 package edu.uwm.cs
 
 import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.ml.feature.LabeledPoint
-import org.apache.spark.ml.linalg.Vectors
-import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Encoder, Encoders, SaveMode, SparkSession}
 
 class NISDataProcessingService(dataSourcePath: String,
@@ -33,28 +30,16 @@ class NISDataProcessingService(dataSourcePath: String,
   }
 
   /**
-   * converts DataFrame to RDD of LabelPoints
-   * @param processedDF DataFrame to convert
-   * @return RDD of LabelPoints
-   *         <br>(label: Total Charge (cleaned), features: Remaining 98 Fields)
-   */
-  def toLibsvm(processedDF: DataFrame): RDD[LabeledPoint] = {
-    processedDF.rdd.map(row => {
-      val fullArray = row.toSeq.toArray.map(_.asInstanceOf[Double])
-      val featureArray = fullArray.slice(1, fullArray.length)
-      LabeledPoint(fullArray(0), Vectors.dense(featureArray))
-    })
-  }
-
-  import spark.implicits._
-  /**
-   * Saves transformed data to S3 in libsvm format
-   * @param processedRDD RDD with transformed data
+   * Saves transformed data to S3 in csv format
+   * @param processedDF DataFrame with processed data
    * @param dataOutputPath S3 location to store output
    */
-  def saveToS3(processedRDD: RDD[LabeledPoint], dataOutputPath: String): Unit = {
-    val processedDF = processedRDD.toDF("label", "features")
-    processedDF.write.mode(SaveMode.Overwrite).format("libsvm").save(dataOutputPath)
+  def saveCsvToS3(processedDF: DataFrame, dataOutputPath: String): Unit = {
+    processedDF.write
+      .format("csv")
+      .option("header", "true")
+      .mode(SaveMode.Overwrite)
+      .save(dataOutputPath)
   }
 
   /**

@@ -1,7 +1,5 @@
 package edu.uwm.cs
 
-import org.apache.spark.ml.feature.LabeledPoint
-import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 
 object DataProcessor {
@@ -24,10 +22,7 @@ object DataProcessor {
     // process data
     val processedDF: DataFrame = nisDataProcessingService.process()
 
-    // convert data to libsvm
-    val processedRDD: RDD[LabeledPoint] = nisDataProcessingService.toLibsvm(processedDF)
-
-    // save libsvm file in S3
-    nisDataProcessingService.saveToS3(processedRDD, dataOutputPath)
+    // save csv to S3
+    nisDataProcessingService.saveCsvToS3(processedDF, dataOutputPath)
   }
 }
