@@ -15,7 +15,6 @@ class NISDataParser extends Serializable {
    */
   def parseData (originalDF: DataFrame): DataFrame = {
     originalDF.select(
-      trim(substring(col("value"), 478, 10)).as("TOTCHG"),
       trim(substring(col("value"), 1, 3)).as("AGE"),
       trim(substring(col("value"), 4, 2)).as("AGE_NEONATE"),
       trim(substring(col("value"), 6, 2)).as("AMONTH"),
@@ -109,6 +108,7 @@ class NISDataParser extends Serializable {
       trim(substring(col("value"), 471, 3)).as("PRDAY15"),
       trim(substring(col("value"), 474, 2)).as("PRVER"),
       trim(substring(col("value"), 476, 2)).as("RACE"),
+      trim(substring(col("value"), 478, 10)).as("TOTCHG"),
       trim(substring(col("value"), 488, 2)).as("TRAN_IN"),
       trim(substring(col("value"), 490, 2)).as("TRAN_OUT"),
       trim(substring(col("value"), 492, 4)).as("YEAR"),
