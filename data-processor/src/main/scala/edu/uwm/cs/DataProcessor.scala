@@ -9,8 +9,8 @@ object DataProcessor {
     if (args.length < 2)
       throw new IllegalArgumentException("Missing one or more required arguments: dataSourceFilePath and dataOutputFolderPath should be specified")
 
-    val dataSourceFilePath = args(0) // s3://dalin-ml-pipeline/input/*.ASC
-    val dataOutputFolderPath = args(1) // s3://dalin-ml-pipeline/transformed-csv
+    val dataSourceFilePath = args(0) // s3://my-ml-pipeline/input/*.ASC
+    val dataOutputFolderPath = args(1) // s3://my-ml-pipeline/transformed-csv
 
     // using service to handle the main work
     val nisDataProcessingService = new NISDataProcessingService()
