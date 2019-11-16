@@ -17,10 +17,14 @@ object ModelBuilder {
       throw new IllegalArgumentException("Missing one or more required arguments.")
     }
 
-    val dataSourceFilePath: String = args(0) // s3://dalin-ml-pipeline/transformed-csv/*.csv
-    val s3BucketName: String = args(1) // my-ml-pipeline
+    val dataSourceFilePath: String = args(0) // s3://my-ml-pipeline/transformed-csv/*.csv
+    val diagnosis: String = args(1)
     val sageMakerRoleArn: String = args(2) // arn:aws:iam::263690384742:role/SparkSageMakerRole
-    val diagnosis: String = args(3)
+    val sageMakerBucketName: String = args(3) // my-ml-pipeline
+    val sageMakerTrainingInstanceType = args(4) // "ml.m4.xlarge"
+    val sageMakerTrainingInstanceCount = args(5).toInt // 1
+    val sageMakerEndpointInstanceType = args(6) // "ml.m4.xlarge"
+    val sageMakerEndpointInitialInstanceCount= args(7).toInt // 1
 
     // extract data for diagnosis, do simple conversion, and remove invalid/missing data
     val nisModelBuildingService = new NISModelBuildingService(allNumericColumns)
@@ -28,8 +32,12 @@ object ModelBuilder {
 
     // Spark pipeline contains a chain of transformers and SageMaker estimator
     val nisPipelineBuilder = new NISPipelineBuilder(numericFeatureColumns, stringIndexFeatureColumns)
-    val pipeline = nisPipelineBuilder.buildPipeline(s3BucketName,
-                                                    sageMakerRoleArn,
+    val pipeline = nisPipelineBuilder.buildPipeline(sageMakerRoleArn,
+                                                    sageMakerTrainingInstanceType,
+                                                    sageMakerTrainingInstanceCount,
+                                                    sageMakerEndpointInstanceType,
+                                                    sageMakerEndpointInitialInstanceCount,
+                                                    sageMakerBucketName,
                                                     sageMakerInputPrefix,
                                                     sageMakerOutputPrefix)
 

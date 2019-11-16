@@ -8,8 +8,12 @@ import org.apache.spark.ml.feature.{OneHotEncoderEstimator, StringIndexer, Vecto
 class NISPipelineBuilder(numericColumns: Array[String],
                          stringIndexColumns: Array[String]) extends Serializable {
 
-  def buildPipeline(s3BucketName: String,
-                    sageMakerRoleArn: String,
+  def buildPipeline(sageMakerRoleArn: String,
+                    sageMakerTrainingInstanceType: String,
+                    sageMakerTrainingInstanceCount: Int,
+                    sageMakerEndpointInstanceType: String,
+                    sageMakerEndpointInitialInstanceCount: Int,
+                    sageMakerBucketName: String,
                     sageMakerInputPrefix: String,
                     sageMakerOutputPrefix: String): Pipeline = {
 
@@ -41,12 +45,12 @@ class NISPipelineBuilder(numericColumns: Array[String],
 
     val xgBoostSageMakerEstimator = new XGBoostSageMakerEstimator(
       sagemakerRole=IAMRole(sageMakerRoleArn),
-      trainingInstanceType = "ml.m4.xlarge",
-      trainingInstanceCount = 1,
-      endpointInstanceType = "ml.m4.xlarge",
-      endpointInitialInstanceCount=1,
-      trainingInputS3DataPath = S3DataPath(s3BucketName, sageMakerInputPrefix),
-      trainingOutputS3DataPath = S3DataPath(s3BucketName, sageMakerOutputPrefix),
+      trainingInstanceType = sageMakerTrainingInstanceType,
+      trainingInstanceCount = sageMakerTrainingInstanceCount,
+      endpointInstanceType = sageMakerEndpointInstanceType,
+      endpointInitialInstanceCount = sageMakerEndpointInitialInstanceCount,
+      trainingInputS3DataPath = S3DataPath(sageMakerBucketName, sageMakerInputPrefix),
+      trainingOutputS3DataPath = S3DataPath(sageMakerBucketName, sageMakerOutputPrefix),
       endpointCreationPolicy = EndpointCreationPolicy.CREATE_ON_CONSTRUCT,
       namePolicyFactory = new CustomNamePolicyFactory("trainingJobName","modelName","endpointConfigName","endpointName")
     )
