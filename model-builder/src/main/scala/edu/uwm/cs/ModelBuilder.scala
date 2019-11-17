@@ -18,7 +18,7 @@ object ModelBuilder {
     }
 
     val dataSourceFilePath: String = args(0) // s3://my-ml-pipeline/transformed-csv/*.csv
-    val diagnosis: String = args(1)
+    val diagnosis: String = args(1) // ICD-10-CM code
     val sageMakerRoleArn: String = args(2) // arn:aws:iam::263690384742:role/SparkSageMakerRole
     val sageMakerBucketName: String = args(3) // my-ml-pipeline
     val sageMakerTrainingInstanceType = args(4) // "ml.m4.xlarge"
@@ -31,7 +31,7 @@ object ModelBuilder {
     val preparedDF: DataFrame = nisModelBuildingService.prepareData(dataSourceFilePath, diagnosis)
 
     // Spark pipeline contains a chain of transformers and SageMaker estimator
-    val nisPipelineBuilder = new NISPipelineBuilder(numericFeatureColumns, stringIndexFeatureColumns)
+    val nisPipelineBuilder = new NISPipelineBuilder(numericFeatureColumns, stringIndexFeatureColumns, diagnosis)
     val pipeline = nisPipelineBuilder.buildPipeline(sageMakerRoleArn,
                                                     sageMakerTrainingInstanceType,
                                                     sageMakerTrainingInstanceCount,

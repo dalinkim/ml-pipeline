@@ -4,9 +4,12 @@ import com.amazonaws.services.sagemaker.sparksdk.algorithms.XGBoostSageMakerEsti
 import com.amazonaws.services.sagemaker.sparksdk.{CustomNamePolicyFactory, EndpointCreationPolicy, IAMRole, S3DataPath}
 import org.apache.spark.ml.{Pipeline, PipelineStage}
 import org.apache.spark.ml.feature.{OneHotEncoderEstimator, StringIndexer, VectorAssembler}
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class NISPipelineBuilder(numericColumns: Array[String],
-                         stringIndexColumns: Array[String]) extends Serializable {
+                         stringIndexColumns: Array[String],
+                         diagnosis: String) extends Serializable {
 
   def buildPipeline(sageMakerRoleArn: String,
                     sageMakerTrainingInstanceType: String,
@@ -43,6 +46,8 @@ class NISPipelineBuilder(numericColumns: Array[String],
     val customTransformer = new CustomTransformer("custometransfomer")
     stages += customTransformer
 
+    val uid = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(LocalDateTime.now)
+
     val xgBoostSageMakerEstimator = new XGBoostSageMakerEstimator(
       sagemakerRole=IAMRole(sageMakerRoleArn),
       trainingInstanceType = sageMakerTrainingInstanceType,
@@ -52,7 +57,7 @@ class NISPipelineBuilder(numericColumns: Array[String],
       trainingInputS3DataPath = S3DataPath(sageMakerBucketName, sageMakerInputPrefix),
       trainingOutputS3DataPath = S3DataPath(sageMakerBucketName, sageMakerOutputPrefix),
       endpointCreationPolicy = EndpointCreationPolicy.CREATE_ON_CONSTRUCT,
-      namePolicyFactory = new CustomNamePolicyFactory("trainingJobName","modelName","endpointConfigName","endpointName")
+      namePolicyFactory = new CustomNamePolicyFactory(s"$diagnosis-training-$uid",s"$diagnosis-model",s"$diagnosis-endpointConfig",s"$diagnosis-endpoint")
     )
     xgBoostSageMakerEstimator.setNumRound(15)
     xgBoostSageMakerEstimator.setObjective("reg:linear")
