@@ -35,11 +35,14 @@ class NISPipelineBuilder(numericColumns: Array[String],
       stages += encoder
     }
 
-    val numericColumns_VA = Array("LOS")
-    val stringIndexColumns_VA = Array("I10_PR1_ENC","HOSP_DIVISION_ENC")
+    val stringIndexColumns_AB = ArrayBuffer[String]()
+    for (stringIndexColumn <- stringIndexColumns) {
+      stringIndexColumns_AB += stringIndexColumn + "_ENC"
+    }
+    val stringIndexColumns_VA = stringIndexColumns_AB.toArray
 
     val assembler = new VectorAssembler()
-      .setInputCols(numericColumns_VA ++ stringIndexColumns_VA)
+      .setInputCols(numericColumns ++ stringIndexColumns_VA)
       .setOutputCol("features")
     stages += assembler
 
