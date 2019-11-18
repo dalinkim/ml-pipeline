@@ -46,8 +46,8 @@ class NISPipelineBuilder(numericColumns: Array[String],
       .setOutputCol("features")
     stages += assembler
 
-    val customTransformer = new CustomTransformer("custometransfomer")
-    stages += customTransformer
+    val sageMakerTransformer = new SageMakerTransformer("custometransfomer")
+    stages += sageMakerTransformer
 
     val uid = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(LocalDateTime.now)
 

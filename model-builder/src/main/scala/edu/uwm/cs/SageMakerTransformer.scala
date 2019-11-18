@@ -11,16 +11,16 @@ import org.apache.spark.sql.types.StructType
  *
  * See <a href="https://github.com/aws/sagemaker-spark/issues/47">https://github.com/aws/sagemaker-spark/issues/47</a>
  */
-class CustomTransformer(override val uid: String) extends Transformer {
+class SageMakerTransformer(override val uid: String) extends Transformer {
   final val inputCol: Param[String] = new Param[String](this, "inputCol", "input column name")
   final def getInputCol: String = $(inputCol)
-  final def setInputCol(value: String): CustomTransformer = set(inputCol, value)
+  final def setInputCol(value: String): SageMakerTransformer = set(inputCol, value)
 
   final val outputCol: Param[String] = new Param[String](this, "outputCol", "output column name")
   final def getOutputCol: String = $(outputCol)
-  final def setOutputCol(value: String): CustomTransformer = set(outputCol, value)
+  final def setOutputCol(value: String): SageMakerTransformer = set(outputCol, value)
 
-  def copy(extra: ParamMap): CustomTransformer = { defaultCopy(extra) }
+  def copy(extra: ParamMap): SageMakerTransformer = { defaultCopy(extra) }
 
   override def transformSchema(schema: StructType): StructType = { schema }
 
