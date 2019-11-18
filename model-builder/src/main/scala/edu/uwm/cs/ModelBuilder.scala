@@ -9,7 +9,7 @@ object ModelBuilder {
 
   final val allNumericColumns = Array("TOTCHG","AGE","AGE_NEONATE","AMONTH","AWEEKEND","DIED","DQTR","ELECTIVE","FEMALE","HCUP_ED","I10_NDX","I10_NECAUSE","I10_NPR","LOS")
   final val numericFeatureColumns: Array[String] = Array("LOS")
-  final val stringIndexFeatureColumns: Array[String] = Array("I10_PR1","HOSP_DIVISION")
+  final val stringIndexFeatureColumns: Array[String] = Array("I10_DX1","I10_PR1","HOSP_DIVISION")
 
   def main(args: Array[String]): Unit = {
 
