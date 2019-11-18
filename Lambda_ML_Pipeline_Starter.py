@@ -1,6 +1,9 @@
 import boto3
 import os
 
+"""
+Lambda handler to spin up an EMR cluster with step executions
+"""
 def lambda_handler(event, context):
     client = boto3.client('emr', region_name='us-east-2')
 
