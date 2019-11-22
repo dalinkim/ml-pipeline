@@ -5,7 +5,7 @@ import os
 Lambda handler to spin up an EMR cluster with step executions
 """
 def lambda_handler(event, context):
-    client = boto3.client('emr', region_name='us-east-2')
+    client = boto3.client('emr', region_name=os.environ['REGION'])
 
     response = client.run_job_flow(
         Name=os.environ['EMR_CLUSTER_NAME'],
