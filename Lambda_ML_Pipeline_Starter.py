@@ -8,29 +8,46 @@ def lambda_handler(event, context):
     client = boto3.client('emr', region_name='us-east-2')
 
     response = client.run_job_flow(
-        Name=os.environ['emr_cluster_name'],
-        LogUri=os.environ['emr_log_uri'],
+        Name=os.environ['EMR_CLUSTER_NAME'],
+        LogUri='s3n://dalin-ml-pipeline/emr-logs/',
         ReleaseLabel='emr-5.27.0',
         Instances={
-            'MasterInstanceType': os.environ['emr_instance_type'],
-            'SlaveInstanceType': os.environ['emr_instance_type'],
-            'InstanceCount': os.environ['emr_instance_count'],
-            'Ec2KeyName': os.environ['emr_ec2_key_name'],
+            'InstanceGroups': [
+                {
+                    'Name': 'Master Instance Group',
+                    'Market': 'SPOT',
+                    'InstanceRole': 'MASTER',
+                    # 'BidPrice': using default (max on-demand),
+                    'InstanceType': 'm4.large',
+                    'InstanceCount': 1
+                },
+                {
+                    'Name': 'Core Instance Group',
+                    'Market': 'SPOT',
+                    'InstanceRole': 'CORE',
+                    # 'BidPrice': using default (max on-demand),
+                    'InstanceType': 'm4.large',
+                    'InstanceCount': 1
+                },
+            ],
+            'Ec2KeyName': os.environ['EMR_EC2_KEY_NAME'],
             'KeepJobFlowAliveWhenNoSteps': False,
             'TerminationProtected': False,
         },
         Steps=[
             {
                 'Name': 'Spark Application',
-                'ActionOnFailure': 'TERMINATE_CLUSTER',
+                'ActionOnFailure': 'TERMINATE_CLUSTER', # cluster should terminate if processing fails
                 'HadoopJarStep': {
                     'Jar': 'command-runner.jar',
                     'Args': [
                         'spark-submit',
                         '--deploy-mode', 'client',
                         '--master', 'yarn',
-                        '--class', os.environ['spark_app_ETL_main_class'],
-                        os.environ['spark_app_ETL_location']
+                        '--class', os.environ['SPARK_DATA_PROCESSOR_MAIN_CLASS'],
+                        os.environ['SPARK_DATA_PROCESSOR_LOCATION'], # arg1
+                        os.environ['SOURCE_DATA_LOCATION'], # arg2
+                        os.environ['TRANSFORMED_DATA_DESTINATION_FOLDER'] # arg2
                     ]
                 }
             },
@@ -43,8 +60,16 @@ def lambda_handler(event, context):
                         'spark-submit',
                         '--deploy-mode', 'client',
                         '--master', 'yarn',
-                        '--class', os.environ['spark_app_ML_main_class'],
-                        os.environ['spark_app_ML_location']
+                        '--class', os.environ['SPARK_MODEL_BUILDER_MAIN_CLASS'],
+                        os.environ['SPARK_MODEL_BUILDER_LOCATION'],
+                        os.environ['TRANSFORMED_DATA_LOCATION'], # arg1
+                        os.environ['SINGLE_DIAGNOSIS_CATEGORY'], # arg2
+                        os.environ['SAGEMAKER_ROLE_ARN'], # arg3
+                        os.environ['SAGEMAKER_BUCKET_NAME'], # arg4
+                        os.environ['SAGEMAKER_TRAINING_INSTANCE_TYPE'], # arg5
+                        os.environ['SAGEMAKER_TRAINING_INSTANCE_COUNT'], # arg6
+                        os.environ['SAGEMAKER_ENDPOINT_INSTANCE_TYPE'], # arg7
+                        os.environ['SAGEMAKER_ENDPOINT_INSTANCE_COUNT'] # arg8
                     ]
                 }
             }
@@ -52,13 +77,15 @@ def lambda_handler(event, context):
         Applications=[
             {
                 'Name': 'Spark',
+                'Version': '2.4.4',
             },
             {
                 'Name': 'Hadoop',
+                'Version': '2.8.5',
             },
         ],
         VisibleToAllUsers=True,
-        JobFlowRole=os.environ['emr_job_flow_role'],
-        ServiceRole=os.environ['emr_service_role'],
+        JobFlowRole=os.environ['EMR_JOB_FLOW_ROLE'],
+        ServiceRole=os.environ['EMR_SERVICE_ROLE'],
     )
-    return "Started an EMR cluster {}".format(response)
+    return "Started cluster {}".format(response)
