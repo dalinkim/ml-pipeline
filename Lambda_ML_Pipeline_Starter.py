@@ -18,16 +18,16 @@ def lambda_handler(event, context):
                     'Market': 'SPOT',
                     'InstanceRole': 'MASTER',
                     # 'BidPrice': using default (max on-demand),
-                    'InstanceType': 'm4.large',
-                    'InstanceCount': 1
+                    'InstanceType': os.environ['EMR_MASTER_INSTANCE_TYPE'],
+                    'InstanceCount': int(os.environ['EMR_MASTER_INSTANCE_COUNT']),
                 },
                 {
                     'Name': 'Core Instance Group',
                     'Market': 'SPOT',
                     'InstanceRole': 'CORE',
                     # 'BidPrice': using default (max on-demand),
-                    'InstanceType': 'm4.large',
-                    'InstanceCount': 1
+                    'InstanceType': os.environ['EMR_CORE_INSTANCE_TYPE'],
+                    'InstanceCount': int(os.environ['EMR_CORE_INSTANCE_COUNT']),
                 },
             ],
             'Ec2KeyName': os.environ['EMR_EC2_KEY_NAME'],
@@ -77,11 +77,9 @@ def lambda_handler(event, context):
         Applications=[
             {
                 'Name': 'Spark',
-                'Version': '2.4.4',
             },
             {
                 'Name': 'Hadoop',
-                'Version': '2.8.5',
             },
         ],
         VisibleToAllUsers=True,
