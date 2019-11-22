@@ -9,7 +9,7 @@ def lambda_handler(event, context):
 
     response = client.run_job_flow(
         Name=os.environ['EMR_CLUSTER_NAME'],
-        LogUri='s3n://dalin-ml-pipeline/emr-logs/',
+        LogUri=os.environ['EMR_LOG_URI'],
         ReleaseLabel='emr-5.27.0',
         Instances={
             'InstanceGroups': [
