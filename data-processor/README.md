@@ -10,6 +10,7 @@ See <a href = "https://www.hcup-us.ahrq.gov/db/nation/nis/tools/stats/FileSpecif
 - <a href = "https://github.com/dalinkim/ml-pipeline/blob/master/data-processor/src/main/scala/edu/uwm/cs/NISDataParser.scala">NISDataParser</a>: parses data from raw text file according to the file specification.
 
 <br>
-The data-processor application takes following 2 arguments: 
+The data-processor application takes following 2 arguments:
+
 - dataSourceFilePath: directory where all input files are read
 - dataOutputFolderPath: directory where all output files are saved
