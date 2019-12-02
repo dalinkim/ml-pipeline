@@ -8,13 +8,13 @@ Lastly, SageMaker is called to train, build, and deploy the model.
 
 - <a href = "https://github.com/dalinkim/ml-pipeline/blob/master/model-builder/src/main/scala/edu/uwm/cs/ModelBuilder.scala">ModelBuilder</a>: application's entry point 
 - <a href = "https://github.com/dalinkim/ml-pipeline/blob/master/model-builder/src/main/scala/edu/uwm/cs/NISModelBuildingService.scala">NISModelBuildingService</a>: prepares data, builds and deploys a model
-- <a href = "https://github.com/dalinkim/ml-pipeline/blob/master/model-builder/src/main/scala/edu/uwm/cs/NISPipelineBuilder.scala">NISPipelineBuilder</a>: builds Spark Pipeline including SageMaker estimator.
+- <a href = "https://github.com/dalinkim/ml-pipeline/blob/master/model-builder/src/main/scala/edu/uwm/cs/NISPipelineBuilder.scala">NISPipelineBuilder</a>: builds Spark Pipeline including SageMaker estimator
 - <a href = "https://github.com/dalinkim/ml-pipeline/blob/master/model-builder/src/main/scala/edu/uwm/cs/NISPipelineBuilder.scala">SageMakerTransformer</a>: transform final DataFrame for SageMaker
 
 <br>
 The model-builder application takes following 8 arguments: 
 
-- dataSourceFilePath: directory where all the transformed data are read. (i.e. s3://my-ml-pipeline/transformed-csv/*.csv)
+- dataSourceFilePath: directory where all the transformed data are read (i.e. s3://my-ml-pipeline/transformed-csv/*.csv)
 - diagnosis: ICD-10-CM (International Classification of Diseases, 10th Revision, Clinical Modification) code of an interested diagnosis
 - sageMakerRoleArn
 - sageMakerBucketName
