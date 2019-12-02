@@ -6,7 +6,7 @@ import org.apache.spark.sql.{DataFrame, Dataset}
 import org.apache.spark.sql.types.StructType
 
 /**
- * This customer transformer exists to transform a DataFrame to only have label and features columns
+ * This custom transformer exists to transform a DataFrame to only have label and features columns
  * to resolve libsvm exception thrown by XGBoostSageMakerEstimator when input DataFrame contains more than these columns.
  *
  * See <a href="https://github.com/aws/sagemaker-spark/issues/47">https://github.com/aws/sagemaker-spark/issues/47</a>
