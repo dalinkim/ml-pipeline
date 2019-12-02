@@ -12,7 +12,7 @@ def lambda_handler(event, context):
     emr_master_instance_type = os.environ['EMR_MASTER_INSTANCE_TYPE']
     emr_master_instance_count = int(os.environ['EMR_MASTER_INSTANCE_COUNT'])
     emr_core_instance_type = os.environ['EMR_CORE_INSTANCE_TYPE']
-    emr_core_instance_count = os.environ['EMR_CORE_INSTANCE_COUNT']
+    emr_core_instance_count = int(os.environ['EMR_CORE_INSTANCE_COUNT'])
     emr_ec2_key_name = os.environ['EMR_EC2_KEY_NAME']
     emr_job_flow_role = os.environ['EMR_JOB_FLOW_ROLE']
     emr_service_role = os.environ['EMR_SERVICE_ROLE']
